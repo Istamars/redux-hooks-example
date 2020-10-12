@@ -23,11 +23,11 @@ const App = () => {
   return (
     <Router history={history}>
       <Switch>
-        {/* <AuthRoute exact path="/" component={pages.Main} />
+        <AuthRoute exact path="/" component={pages.Main} />
         <AuthRoute exact path="/about" component={pages.AboutUs} />
         <Route exact path="/auth" component={pages.AuthComponent} />
-        <Route exact path="/not-found" component={pages.NotFound} /> */}
-        <Route exact path="/" component={pages.Main} />
+        <Route exact path="/not-found" component={pages.NotFound} />
+        {/* <Route exact path="/" component={pages.Main} /> */}
       </Switch>
     </Router>
   );

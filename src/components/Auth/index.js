@@ -3,8 +3,11 @@ import { Button, Card, CardContent, Grid, TextField } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 
 import AuthAction from '../../actions/auth.action';
-import { connect } from 'react-redux';
+import history from '../../history';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
+import apis from '../../apis';
+import actionType from '../../constant/action-types';
 
 const useStyles = makeStyles((theme) => ({
   formComponent: {
@@ -16,10 +19,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AuthComponent = (props) => {
+const AuthComponent = () => {
   const classes = useStyles();
+  const user = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+
+  const logIn = (formData) => {
+    return async (dispatch) => {
+      console.log(formData);
+      const response = await apis.post('/auth/login', formData);
+
+      dispatch({
+        type: actionType.LOG_IN,
+        payload: response.data,
+      });
+
+      alert('response', response.data);
+      history.push('/');
+    };
+  };
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -29,13 +50,15 @@ const AuthComponent = (props) => {
     setPassword(event.target.value);
   };
 
-  const handleSubmit = () => {
-    props.logIn({ email, password });
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    dispatch(logIn({ email, password }));
   };
 
-  const { isSignedIn } = props;
+  console.log('user', user);
 
-  if (isSignedIn === true) return <Redirect to="/not-found" />;
+  // if (user.isSignedIn === true) return <Redirect to="/not-found" />;
+  // else
   return (
     <Grid
       className={classes.gridHeight}
@@ -89,10 +112,4 @@ const AuthComponent = (props) => {
   );
 };
 
-const logIn = AuthAction.logIn;
-
-const mapStateToProps = (state) => {
-  return { isSignedIn: state.auth };
-};
-
-export default connect(mapStateToProps, { logIn })(AuthComponent);
+export default AuthComponent;
